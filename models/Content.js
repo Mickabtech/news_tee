@@ -31,5 +31,5 @@ const newsSchema = mongoose.Schema({
 })
 
 
-const News = mongoose.model('Book', newsSchema);
+const News = mongoose.model('News', newsSchema);
 module.exports = News
