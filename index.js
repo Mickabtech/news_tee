@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors  = require('cors');
 const env = require('dotenv');
 const path = require('path');
+const NewsRoute = require("./routes/NewsRoute")
 
 app.use(cors())
 app.use(express.json())
@@ -11,7 +12,7 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-
+app.use('/api/news', NewsRoute)
 env.config()
 
 
