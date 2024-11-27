@@ -5,6 +5,7 @@ const cors  = require('cors');
 const env = require('dotenv');
 const path = require('path');
 const NewsRoute = require("./routes/NewsRoute")
+const bodyParser = require("body-parser");
 
 app.use(cors())
 app.use(express.json())
