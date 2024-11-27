@@ -12,7 +12,7 @@ const newsSchema = mongoose.Schema({
     },
 
     category: {
-        type: Number,
+        type: String,
         require: true
     },
 
