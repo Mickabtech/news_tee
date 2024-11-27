@@ -4,8 +4,8 @@ const {createNews, getNews, deleteNews} = require("../controllers/NewsController
 
 const upload = require("../config/Upload")
 
-router.post("/news", upload.single("file"), createNews);
-router.get("/news", getNews);
-router.delete("/news/:id", deleteNews);
+router.post("/", upload.single("file"), createNews);
+router.get("/", getNews);
+router.delete("/:id", deleteNews);
 
 module.exports = router;
