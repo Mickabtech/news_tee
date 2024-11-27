@@ -6,7 +6,7 @@ const cloudinary = require("../utils/Cloudinary");
 //Create a news 
 const createNews = async (req, res) => {
     try {
-      const { title, content, category } = req.body;
+      const {title, content, category} = req.body;
   
       if (!title || !content || !category ) {
         return res.status(400).json({ message: "Please fill in all details" });
@@ -33,7 +33,7 @@ const getNews = async (req, res) => {
       res.status(200).json({
         Message: "News found",
         Iwe: news,
-        NumberOfBooks: news.length,
+        NumberOfNews: news.length,
       });
     } catch (error) {
       res.status(400).json({ message: error.message });
