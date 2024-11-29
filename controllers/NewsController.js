@@ -18,7 +18,7 @@ const createNews = async (req, res) => {
     let uploadedVideo = null;
 
     // Handle image upload
-    if (req.files && req.files.image) {
+    if (req.files && req.files.images) {
       try {
         const imageResult = await cloudinary.uploader.upload(req.files.image[0].path);
         uploadedImage = imageResult.secure_url;
@@ -29,7 +29,7 @@ const createNews = async (req, res) => {
     }
 
     // Handle video upload
-    if (req.files && req.files.video) {
+    if (req.files && req.files.videos) {
       try {
         const videoResult = await cloudinary.uploader.upload(req.files.video[0].path, {
           resource_type: "video",
