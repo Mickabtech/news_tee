@@ -20,7 +20,7 @@ const createNews = async (req, res) => {
     // Handle image upload
     if (req.files && req.files.images) {
       try {
-        const imageResult = await cloudinary.uploader.upload(req.files.image[0].path);
+        const imageResult = await cloudinary.uploader.upload(req.files.images[0].path);
         uploadedImage = imageResult.secure_url;
       } catch (err) {
         console.error("Image upload failed:", err.message);
@@ -31,7 +31,7 @@ const createNews = async (req, res) => {
     // Handle video upload
     if (req.files && req.files.videos) {
       try {
-        const videoResult = await cloudinary.uploader.upload(req.files.video[0].path, {
+        const videoResult = await cloudinary.uploader.upload(req.files.videos[0].path, {
           resource_type: "video",
         });
         uploadedVideo = videoResult.secure_url;
