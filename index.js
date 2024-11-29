@@ -1,37 +1,48 @@
 const express = require('express');
-const app = express();
 const mongoose = require('mongoose');
-const cors  = require('cors');
-const env = require('dotenv');
+const cors = require('cors');
+const dotenv = require('dotenv'); // Updated naming for consistency
 const path = require('path');
-const NewsRoute = require("./routes/NewsRoute")
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
+const NewsRoute = require('./routes/NewsRoute');
 
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
-app.use(bodyParser.urlencoded({ extended: true })); 
+dotenv.config(); // Load environment variables from .env file
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const app = express();
 
-app.use('/api/news', NewsRoute)
-env.config()
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false })); // Parse URL-encoded payloads
+app.use(bodyParser.urlencoded({ extended: true })); // Parse form-data for file uploads
 
+// Static file serving for uploads
+app.use('/upload', express.static(path.join(__dirname, 'upload')));
 
-const port = process.env.PORT || 3005
-const mongodbURL = process.env.MONGOURI
+// API Routes
+app.use('/api/news', NewsRoute);
 
-mongoose.connect(mongodbURL)
-.then(()=>{
-    console.log('Database Connected')
-}).catch(()=>{
-    console.log('error connecting to Database')
-})
+// Database Connection
+const mongodbURL = process.env.MONGOURI;
 
+if (!mongodbURL) {
+  console.error('MONGOURI is not defined in the .env file.');
+  process.exit(1); // Exit the app if no DB URL is provided
+}
 
+mongoose
+  .connect(mongodbURL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Database connected successfully.');
+  })
+  .catch((err) => {
+    console.error('Error connecting to the database:', err.message);
+    process.exit(1); // Exit the app if DB connection fails
+  });
 
+// Start Server
+const port = process.env.PORT || 3005;
 
-
-app.listen(port, ()=>{
-    console.log(`Server is running on port ${port}`)
-})
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
