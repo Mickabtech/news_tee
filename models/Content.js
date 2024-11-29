@@ -1,35 +1,18 @@
 const mongoose = require("mongoose");
 
-const newsSchema = mongoose.Schema({
-    title: {
-        type: String,
-        require: true
-    },
+// Schema definition
+const newsSchema = mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    category: { type: String, required: true },
+    images: { type: String }, // URL of uploaded image (optional)
+    videos: { type: String }, // URL of uploaded video (optional)
+  },
+  { timestamps: true }
+);
 
-    content: {
-        type: String,
-        require: true
-    },
+// Model creation
+const News = mongoose.model("News", newsSchema);
 
-    category: {
-        type: String,
-        require: true
-    },
-
-    images: {
-        type: String,
-        require: false
-    },
-
-    videos: {
-        type: String,
-        require: false
-    }
-
-}, {
-    timestamps: true
-})
-
-
-const News = mongoose.model('News', newsSchema);
-module.exports = News
+module.exports = News;

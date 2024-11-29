@@ -1,22 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const { createNews, getNews, deleteNews } = require("../controllers/NewsController");
-const upload = require("../config/Upload"); // Middleware for file uploads
+const upload = require("../config/Upload");
 
-// Route to create news (supports optional image and video uploads)
+// Create news route
 router.post(
   "/",
   upload.fields([
-    { name: "images", maxCount: 1 }, // Handle a single image file
-    { name: "videos", maxCount: 1 }, // Handle a single video file
+    { name: "images", maxCount: 1 },
+    { name: "videos", maxCount: 1 },
   ]),
   createNews
 );
 
-// Route to get all news
+// Get all news route
 router.get("/", getNews);
 
-// Route to delete a specific news item by ID
+// Delete news route
 router.delete("/:id", deleteNews);
 
 module.exports = router;
