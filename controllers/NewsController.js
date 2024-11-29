@@ -1,5 +1,5 @@
 const News = require("../models/Content");
-const cloudinary = require("../config/Cloudinary");
+const cloudinary = require("../utils/Cloudinary");
 
 // Create news
 const createNews = async (req, res) => {
