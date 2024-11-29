@@ -5,8 +5,8 @@ const cloudinary = require("../utils/Cloudinary");
 
 const createNews = async (req, res) => {
   try {
-    console.log("Files received:", req.files); // Log uploaded files
-    console.log("Body received:", req.body);   // Log form data
+    console.log("Files received:", req.files);
+    console.log("Body received:", req.body);
 
     const { title, content, category } = req.body;
 
@@ -17,34 +17,46 @@ const createNews = async (req, res) => {
     let uploadedImage = null;
     let uploadedVideo = null;
 
-    if (req.files) {
-      // Check for image upload
-      if (req.files.image) {
-        console.log("Uploading image...");
+    // Handle image upload
+    if (req.files && req.files.image) {
+      try {
         const imageResult = await cloudinary.uploader.upload(req.files.image[0].path);
         uploadedImage = imageResult.secure_url;
-        console.log("Image uploaded to Cloudinary:", uploadedImage);
-      }
-
-      // Check for video upload
-      if (req.files.video) {
-        console.log("Uploading video...");
-        const videoResult = await cloudinary.uploader.upload(req.files.video[0].path, { resource_type: "video" });
-        uploadedVideo = videoResult.secure_url;
-        console.log("Video uploaded to Cloudinary:", uploadedVideo);
+      } catch (err) {
+        console.error("Image upload failed:", err.message);
+        return res.status(500).json({ message: "Image upload to Cloudinary failed" });
       }
     }
 
-    const newsData = { title, content, category, image: uploadedImage, video: uploadedVideo };
-    const news = await News.create(newsData);
+    // Handle video upload
+    if (req.files && req.files.video) {
+      try {
+        const videoResult = await cloudinary.uploader.upload(req.files.video[0].path, {
+          resource_type: "video",
+        });
+        uploadedVideo = videoResult.secure_url;
+      } catch (err) {
+        console.error("Video upload failed:", err.message);
+        return res.status(500).json({ message: "Video upload to Cloudinary failed" });
+      }
+    }
 
+    // Create news
+    const newsData = {
+      title,
+      content,
+      category,
+      images: uploadedImage,
+      videos: uploadedVideo,
+    };
+
+    const news = await News.create(newsData);
     res.status(201).json(news);
   } catch (error) {
-    console.error("Error:", error.message); // Log error message
+    console.error("Error:", error.message);
     res.status(500).json({ message: error.message });
   }
 };
-
 
 
   // Get all news
