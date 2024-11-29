@@ -5,43 +5,46 @@ const cloudinary = require("../utils/Cloudinary");
 
 const createNews = async (req, res) => {
   try {
+    console.log("Files received:", req.files); // Log uploaded files
+    console.log("Body received:", req.body);   // Log form data
+
     const { title, content, category } = req.body;
 
-    // Validate required fields
     if (!title || !content || !category) {
-      return res.status(400).json({ message: "Please fill in all required details" });
+      return res.status(400).json({ message: "Please provide all required fields" });
     }
 
     let uploadedImage = null;
     let uploadedVideo = null;
 
-    // Check if a file was uploaded and handle image/video accordingly
-    if (req.file) {
-      const fileType = req.file.mimetype.startsWith("image") ? "image" : "video";
-      const uploadResult = await cloudinary.uploader.upload(req.file.path);
+    if (req.files) {
+      // Check for image upload
+      if (req.files.image) {
+        console.log("Uploading image...");
+        const imageResult = await cloudinary.uploader.upload(req.files.image[0].path);
+        uploadedImage = imageResult.secure_url;
+        console.log("Image uploaded to Cloudinary:", uploadedImage);
+      }
 
-      if (fileType === "image") {
-        uploadedImage = uploadResult.secure_url; // Store the uploaded image URL
-      } else if (fileType === "video") {
-        uploadedVideo = uploadResult.secure_url; // Store the uploaded video URL
+      // Check for video upload
+      if (req.files.video) {
+        console.log("Uploading video...");
+        const videoResult = await cloudinary.uploader.upload(req.files.video[0].path, { resource_type: "video" });
+        uploadedVideo = videoResult.secure_url;
+        console.log("Video uploaded to Cloudinary:", uploadedVideo);
       }
     }
 
-    // Prepare the data to be saved
-    const newsData = {
-      title,
-      content,
-      category,
-      images: uploadedImage, // Optional image URL
-      videos: uploadedVideo, // Optional video URL
-    };
+    const newsData = { title, content, category, image: uploadedImage, video: uploadedVideo };
+    const news = await News.create(newsData);
 
-    const news = await News.create(newsData); // Save to database
-    res.status(201).json(news); // Return the created news
+    res.status(201).json(news);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error:", error.message); // Log error message
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 
   // Get all news
